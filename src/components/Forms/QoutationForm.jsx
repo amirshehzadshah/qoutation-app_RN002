@@ -1,53 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Formik } from 'formik';
-import TextField from '../../common/TextField';
-import Dropdown from '../../common/Dropdown'; // Import the Dropdown component
 import { useNavigation } from '@react-navigation/native';
+import Collapsible from 'react-native-collapsible';
+import CollapsibleSectionHeader from '../../common/CollapsibleSectionHeader';
+import TextField from '../../common/TextField';
+import Dropdown from '../../common/Dropdown';
+import { useFormStore } from '../../store/qoutationStore';
 
 const QoutationForm = () => {
 
   const navigation = useNavigation();
+  const [activeSection, setActiveSection] = useState();
 
-  const initialValues = {
-    name: '',
-    country: '', // Added field for dropdown
-  };
+  const { name, country, setName, setCountry, setFormData } = useFormStore();
 
-  const onSubmit = (data) => {
-    console.log('Form Values:', data);
-    navigation.navigate('NewFormData', { formData: data });
+  useEffect(() => {
+    setActiveSection(1);
+  }, []);
+
+  const onSubmit = () => {
+    const formData = { name, country };
+    console.log('Form Values:', formData);
+    setFormData(formData);
+    navigation.navigate('NewFormData');
   };
 
   return (
     <View style={styles.container}>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View style={styles.form}>
+      <View style={styles.form}>
+        <CollapsibleSectionHeader
+          title="Personal Info"
+          isActive={activeSection === 1}
+          onPress={() => setActiveSection(activeSection === 1 ? null : 1)}
+        />
+        <Collapsible collapsed={activeSection !== 1}>
+          <View style={styles.sectionContent}>
             <TextField
               label="Name"
               placeholder="Name"
-              value={values.name}
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
+              value={name}
+              onChangeText={setName}
             />
+          </View>
+        </Collapsible>
 
+        <CollapsibleSectionHeader
+          title="Description"
+          isActive={activeSection === 2}
+          onPress={() => setActiveSection(activeSection === 2 ? null : 2)}
+        />
+        <Collapsible collapsed={activeSection !== 2}>
+          <View style={styles.sectionContent}>
             <Dropdown
               label="Country"
-              value={values.country}
-              onValueChange={handleChange('country')}
+              value={country}
+              onValueChange={setCountry}
             />
-            
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleSubmit}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
           </View>
-        )}
-      </Formik>
+        </Collapsible>
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={onSubmit}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -55,22 +74,43 @@ const QoutationForm = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    width: '95%',
   },
   form: {
-    backgroundColor: '#ffffff', // White background for the form
+    backgroundColor: '#ffffff',
     padding: 20,
-    borderRadius: 10, // Optional: rounded corners for the form
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3, 
+    elevation: 3,
+  },
+  sectionHeader: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    marginVertical: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sectionTitle: {
+    paddingVertical: 10,
+    paddingStart: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  sectionSign: {
+    paddingVertical: 10,
+    paddingEnd: 10,
+  },
+  sectionContent: {
+    paddingHorizontal: 10,
+    marginVertical: 10,
   },
   button: {
     backgroundColor: '#007BFF',
-    // padding: 10,
-    // marginTop: 20,
+    padding: 10,
     borderRadius: 5,
+    marginTop: 20,
   },
   buttonText: {
     color: '#FFF',

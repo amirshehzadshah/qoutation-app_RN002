@@ -3,8 +3,8 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import Home from '../screens/Home';
-import Qoutation from '../screens/Qoutation';
-import PlusButton from '../components/PlusButton'; // Import your PlusButton component
+import Qoutations from '../screens/Qoutations';
+import PlusButton from '../components/PlusButton';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +31,7 @@ const TabNavigator = () => {
         />
         <Tab.Screen
           name="Qoutation"
-          component={Qoutation}
+          component={Qoutations}
           options={{
             tabBarIcon: ({ focused, color }) => (
               <Ionicons name={focused ? 'document-text' : 'document-text-outline'} color={color} size={30} />
@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 20, // Adjust the bottom distance as needed
+    bottom: 20,
     left: '50%',
-    transform: [{ translateX: -30 }], // This centers the button horizontally
-    zIndex: 1, // Ensures the button is on top of the tab bar
+    transform: [{ translateX: -30 }],
+    zIndex: 1,
   },
 });

@@ -1,12 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ProfilePic from '../components/ProfilePic';
 import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { useNavigation } from '@react-navigation/native';
 
 // const { width, height } = Dimensions.get('window');
 
 export default function Home() {
+
+  const navigation = useNavigation();
+
+  const userDetails = () => navigation.navigate('UserDetails');
 
   const [fontsLoaded] = useFonts({ Poppins_600SemiBold })
 
@@ -21,7 +26,9 @@ export default function Home() {
           <Text style={styles.HeaderText}>Hello !</Text>
           <Text style={styles.HeaderText}>Mirza Hamza Shoaib Baig</Text>
         </View>
-        <ProfilePic />
+        <TouchableOpacity onPress={userDetails}>
+          <ProfilePic />
+        </TouchableOpacity>
       </View>
       <View style={styles.MainContainer}>
         {/* <Text style={styles.MainText}>Welcome to</Text>

@@ -1,10 +1,15 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
+import useUserStore from '../store/useUserStore'
+import AVATAR from '../../assets/images/avatar.jpg'
 
 const ProfilePic = () => {
+
+  const imageUri = useUserStore((state) => state.user.profileImageUri)
+
   return (
     <View style={styles.ImageContainer}>
-      <Image source={require('../../assets/images/avatar.jpg')} style={styles.Image} />
+      <Image source={imageUri ? { uri: imageUri } : AVATAR} style={styles.Image} />
     </View>
   )
 }

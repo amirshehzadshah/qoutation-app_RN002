@@ -1,103 +1,107 @@
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import ProfilePic from '../components/ProfilePic';
 import { useFonts, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { useNavigation } from '@react-navigation/native';
-
-// const { width, height } = Dimensions.get('window');
+import ScreenLayout from '../layouts/ScreenLayout';
+import HorizontalWrapper from '../layouts/HorizontalWrapper';
+import useUserStore from '../store/useUserStore';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
 
   const navigation = useNavigation();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { user } = useUserStore()
 
   const userDetails = () => navigation.navigate('UserDetails');
 
   const [fontsLoaded] = useFonts({ Poppins_600SemiBold })
+  const [translateY] = useState(new Animated.Value(windowHeight));
+
+  useEffect(() => {
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [translateY]);
 
   if (!fontsLoaded) {
     return <Text>Loading...</Text>;
   }
 
   return (
-    <View style={styles.Container}>
-      <View style={styles.HeaderContainer}>
-        <View style={styles.HeaderTextContainer}>
-          <Text style={styles.HeaderText}>Hello !</Text>
-          <Text style={styles.HeaderText}>Mirza Hamza Shoaib Baig</Text>
+    <ScreenLayout>
+      <HorizontalWrapper>
+        <View style={styles.greetingWrapper}>
+          <Text style={[styles.greetingText, { fontSize: windowWidth * 0.06 }]}>Hello !</Text>
+          <Text style={[styles.greetingText, { fontSize: windowWidth * 0.06 }]}>{user.name}</Text>
         </View>
-        <TouchableOpacity onPress={userDetails}>
+        <TouchableOpacity onPress={userDetails} style={styles.greetingWrapper}>
           <ProfilePic />
         </TouchableOpacity>
-      </View>
-      <View style={styles.MainContainer}>
-        {/* <Text style={styles.MainText}>Welcome to</Text>
-        <View style={styles.ImageContainer}>
+      </HorizontalWrapper>
+
+      <Animated.View style={[styles.infoContainer, { transform: [{ translateY }] }]}>
+        <Text style={[styles.infoTitle, { fontSize: windowWidth * 0.12 }]}>Welcome to</Text>
+        <View style={styles.logoWrapper}>
           <Image
-            source={require('../../assets/images/logo1.png')}
-            style={styles.MainImage}
+            source={require('../../assets/images/logo2.png')}
+            style={[styles.logo, { height: windowHeight * 0.2, width: windowWidth * 0.8, }]}
             resizeMode='contain'
           />
-        </View> */}
-        <View>
-          <Text style={styles.MainHeading}>Recent</Text>
         </View>
-      </View>
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.descriptionText}>
+            Orions Lifts (SMC-Private) Limited is a leading provider of elevators, escalators, travelators, and moving walkways. With a strong emphasis on quality and innovation, we specialize in manufacturing, sales, installation, and parts.
+          </Text>
+        </View>
+      </Animated.View>
       <StatusBar style="auto" />
-    </View>
+    </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  Container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: getStatusBarHeight(),
+  greetingWrapper: {
+    marginTop: 40,
   },
-  HeaderContainer: {
-    paddingTop: 24,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // borderWidth: 2
-  },
-  HeaderTextContainer: {
-    justifyContent: 'flex-start',
-  },
-  HeaderText: {
-    fontSize: 24,
+  greetingText: {
     fontFamily: 'Poppins_600SemiBold',
     color: '#333333',
   },
-  MainContainer: {
+  infoContainer: {
+    flex: 1,
     marginTop: 12,
     paddingTop: 12,
     paddingHorizontal: 12,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    backgroundColor: '#b4b8e7'
-    // borderWidth: 2
+    backgroundColor: '#b4b8e7',
+    alignItems: 'center',
   },
-  // MainText: {
-  //   fontSize: 48,
-  //   fontFamily: 'Poppins_600SemiBold',
-  //   color: '#333333',
-  // },
-  // ImageContainer: {
-  //   borderColor: '#e0a705',
-  //   alignSelf: 'center',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   overflow: 'hidden'
-  // },
-  // MainImage: {
-  //   height: height * 0.1,
-  //   width: width * 0.95,
-  //   // borderWidth: 2,
-  // },
-  MainHeading: {
+  infoTitle: {
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#333333',
+    textAlign: 'center'
+  },
+  logoWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden'
+  },
+  logo: {},
+  descriptionContainer: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+  },
+  descriptionText: {
     fontSize: 16,
     fontFamily: 'Poppins_600SemiBold',
     color: '#333333',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

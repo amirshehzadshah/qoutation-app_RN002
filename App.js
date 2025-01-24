@@ -3,8 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from './src/navigators/TabNavigator';
 import ViewQoutation from './src/screens/ViewQoutation';
-import NewQoutation from './src/screens/NewQoutation';
 import UserDetails from './src/screens/UserDetails';
+import QoutationRequestForm from './src/screens/QoutationRequestForm';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
             animation: 'slide_from_bottom'
           }
         }/>
-        <Stack.Screen name="NewQoutation" component={NewQoutation} options={
+        <Stack.Screen name="NewQoutation" component={QoutationRequestForm} options={
           {
             animation: 'slide_from_bottom'
           }
